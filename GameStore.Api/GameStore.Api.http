@@ -1,0 +1,11 @@
+@GameStore.Api_HostAddress = http://localhost:5156
+
+GET {{GameStore.Api_HostAddress}}/openapi/v1.json
+Accept: application/json
+
+###
+
+GET {{GameStore.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
