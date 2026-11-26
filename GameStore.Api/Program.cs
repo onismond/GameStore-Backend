@@ -1,10 +1,30 @@
+using GameStore.Api.Data;
+using GameStore.Api.Models.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+
 builder.Services.AddOpenApi();
+
+var connectionString =
+    builder.Configuration.GetConnectionString("GameStore") 
+    ?? throw new InvalidOperationException(
+        "GameStore connection string is not configured.");
+
+builder.Services.AddDbContext<GameStoreDbContext>(options =>
+{
+    options.UseNpgsql(connectionString);
+});
+
+builder.Services
+    .AddIdentityCore<ApplicationUser>()
+    .AddRoles<IdentityRole<Guid>>()
+    .AddEntityFrameworkStores<GameStoreDbContext>();
 
 var app = builder.Build();
 
