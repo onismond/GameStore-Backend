@@ -16,6 +16,8 @@ namespace GameStore.Api.Data
         {
         }
 
+        public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+
         public DbSet<Game> Games => Set<Game>();
 
         public DbSet<Platform> Platforms => Set<Platform>();

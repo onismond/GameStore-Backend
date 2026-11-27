@@ -16,7 +16,7 @@ partial class GameStoreDbContextModelSnapshot : ModelSnapshot
     // If you encounter a merge conflict in the line below, it means you need to
     // discard one of the migration branches and recreate its migrations on top of
     // the other branch. See https://aka.ms/efcore-docs-migrations-conflicts for more info.
-    public override string LastMigrationId => "20261126175419_InitialCreate";
+    public override string LastMigrationId => "20261127070758_AddRefreshTokens";
 
     protected override void BuildModel(ModelBuilder modelBuilder)
     {
@@ -356,6 +356,55 @@ partial class GameStoreDbContextModelSnapshot : ModelSnapshot
                 b.ToTable("Platforms");
             });
 
+        modelBuilder.Entity("GameStore.Api.Models.Entities.RefreshToken", b =>
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("uuid");
+
+                b.Property<DateTime>("CreatedAtUtc")
+                    .HasColumnType("timestamp with time zone");
+
+                b.Property<string>("CreatedByIp")
+                    .HasMaxLength(45)
+                    .HasColumnType("character varying(45)");
+
+                b.Property<DateTime>("ExpiresAtUtc")
+                    .HasColumnType("timestamp with time zone");
+
+                b.Property<Guid>("FamilyId")
+                    .HasColumnType("uuid");
+
+                b.Property<string>("ReplacedByTokenHash")
+                    .HasMaxLength(64)
+                    .HasColumnType("character varying(64)");
+
+                b.Property<DateTime?>("RevokedAtUtc")
+                    .HasColumnType("timestamp with time zone");
+
+                b.Property<string>("TokenHash")
+                    .IsRequired()
+                    .HasMaxLength(64)
+                    .HasColumnType("character varying(64)");
+
+                b.Property<DateTime>("UpdatedAtUtc")
+                    .HasColumnType("timestamp with time zone");
+
+                b.Property<Guid>("UserId")
+                    .HasColumnType("uuid");
+
+                b.HasKey("Id");
+
+                b.HasIndex("ExpiresAtUtc");
+
+                b.HasIndex("TokenHash")
+                    .IsUnique();
+
+                b.HasIndex("UserId", "FamilyId");
+
+                b.ToTable("RefreshTokens");
+            });
+
         modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
             {
                 b.Property<Guid>("Id")
@@ -554,6 +603,17 @@ partial class GameStoreDbContextModelSnapshot : ModelSnapshot
                 b.Navigation("Listing");
             });
 
+        modelBuilder.Entity("GameStore.Api.Models.Entities.RefreshToken", b =>
+            {
+                b.HasOne("GameStore.Api.Models.Entities.ApplicationUser", "User")
+                    .WithMany("RefreshTokens")
+                    .HasForeignKey("UserId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+
+                b.Navigation("User");
+            });
+
         modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
             {
                 b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", null)
@@ -608,6 +668,8 @@ partial class GameStoreDbContextModelSnapshot : ModelSnapshot
         modelBuilder.Entity("GameStore.Api.Models.Entities.ApplicationUser", b =>
             {
                 b.Navigation("Listings");
+
+                b.Navigation("RefreshTokens");
             });
 
         modelBuilder.Entity("GameStore.Api.Models.Entities.Game", b =>
