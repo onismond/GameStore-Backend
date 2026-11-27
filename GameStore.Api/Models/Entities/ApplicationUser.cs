@@ -12,6 +12,9 @@ namespace GameStore.Api.Models.Entities
 
         public DateTime CreatedAtUtc { get; set; } = DateTime.UtcNow;
 
+        public ICollection<RefreshToken> RefreshTokens { get; set; } 
+            = new List<RefreshToken>();
+
         public ICollection<Listing> Listings { get; set; } = new List<Listing>();
     }
 }
